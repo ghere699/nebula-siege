@@ -1,4 +1,5 @@
 #pragma once
+#include <mutex>
 class c_overlay
 {
 public:
@@ -10,6 +11,8 @@ public:
 	static inline ID3D11RenderTargetView* target_view;
 	static inline ImFont* font;
 	static inline WNDCLASSEX wc;
+
+	static inline std::mutex actor_list_mutex;
 
 	static bool setup_overlay();
 

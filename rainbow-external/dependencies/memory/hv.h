@@ -53,7 +53,8 @@ enum hypercall_code : uint64_t {
   hypercall_remove_mmr,
   hypercall_remove_all_mmrs,
   hypercall_section_base,
-  hypercall_scan_dtb
+  hypercall_scan_dtb,
+  hypercall_get_actor_set
 };
 
 // hypercall input
@@ -91,6 +92,9 @@ uint64_t test(uint64_t a1 = 0, uint64_t a2 = 0,
 
 // read from arbitrary physical memory
 size_t read_phys_mem(void* dst, uint64_t src, size_t size);
+
+template <typename T>
+inline T read_phys_mem(uint64_t const src);
 
 // write to arbitrary physical memory
 size_t write_phys_mem(uint64_t dst, void const* src, size_t size);
@@ -149,6 +153,8 @@ void remove_mmr(void* handle);
 
 // remove every installed MMR
 void remove_all_mmrs();
+
+uint64_t get_actor_set(uint64_t dst, size_t size);
 
 // VMCALL instruction, defined in hv.asm
 uint64_t vmx_vmcall(hypercall_input& input);
@@ -215,6 +221,13 @@ inline size_t read_phys_mem(void* const dst, uint64_t const src,
   input.args[1] = src;
   input.args[2] = size;
   return hv::vmx_vmcall(input);
+}
+
+template <typename T>
+T read_phys_mem(uint64_t const src) {
+  T buffer = {};
+  read_phys_mem(&buffer, src, sizeof(T));
+  return buffer;
 }
 
 // write to arbitrary physical memory
@@ -409,6 +422,16 @@ inline uint64_t scan_process_dtb(DWORD pid)
 	input.code = hv::hypercall_scan_dtb;
 	input.key = hv::hypercall_key;
 	input.args[0] = pid;
+	return hv::vmx_vmcall(input);
+}
+
+inline uint64_t get_actor_set(uint64_t dst, size_t size)
+{
+	hv::hypercall_input input;
+	input.code = hv::hypercall_get_actor_set;
+	input.key = hv::hypercall_key;
+	input.args[0] = dst;
+	input.args[1] = size;
 	return hv::vmx_vmcall(input);
 }
 

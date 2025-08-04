@@ -1,4 +1,8 @@
 ﻿#include "includes.hpp"
+#include <chrono>
+
+// Chrono literals
+using namespace std::chrono_literals;
 
 bool c_overlay::setup_overlay()
 {
@@ -213,94 +217,101 @@ bool c_overlay::setup_render()
 		ImDrawList* draw = ImGui::GetBackgroundDrawList();
 
 		if (!cache.camera)
-			continue;
+			goto IMGUI_END;
 
-		for (c_actor* actor : cache.actor_list)
 		{
-			if (!actor)
-				continue;
+			std::lock_guard lock(actor_list_mutex);
 
-			if (!actor->is_actor_player())
-				continue;
+			for (c_actor* actor : cache.actor_list)
+			{
+				
+				if (!actor)
+					continue;
 
-			c_actor::actor_status status = actor->get_actor_status();
-			if (status != c_actor::actor_status::VALID)
-				continue;
+				if (!actor->is_actor_player())
+					continue;
 
-			vector3_t origin = actor->get_actor_position();
-			if (origin.empty())
-				continue;
+				c_actor::actor_status status = actor->get_actor_status();
+				if (status != c_actor::actor_status::VALID)
+					continue;
 
-			auto [min, max] = actor->get_actor_bounds();
-			if (min.empty() || max.empty())
-				continue;
+				vector3_t origin = actor->get_actor_position();
+				if (origin.empty())
+					continue;
 
-			// we clamp the bounds due to an issue where the player would walk and the bounds for extend very far
-			const float max_extent = 1.0f;
+				auto [min, max] = actor->get_actor_bounds();
+				if (min.empty() || max.empty())
+					continue;
 
-			min.x = std::clamp(min.x, -max_extent, max_extent);
-			min.y = std::clamp(min.y, -max_extent, max_extent);
-			max.x = std::clamp(max.x, -max_extent, max_extent);
-			max.y = std::clamp(max.y, -max_extent, max_extent);
+				// we clamp the bounds due to an issue where the player would walk and the bounds for extend very far
+				const float max_extent = 1.0f;
 
-			const float extent_x = std::abs(max.x - min.x);
-			const float extent_y = std::abs(max.y - min.y);
-			const float extent_z = std::abs(max.z - min.z);
-			const float volume = extent_x * extent_y * extent_z;
+				min.x = std::clamp(min.x, -max_extent, max_extent);
+				min.y = std::clamp(min.y, -max_extent, max_extent);
+				max.x = std::clamp(max.x, -max_extent, max_extent);
+				max.y = std::clamp(max.y, -max_extent, max_extent);
 
-			// my current actor list draws every rigid body on the player, we have these checks in place to ensure we only draw the player box only
+				const float extent_x = std::abs(max.x - min.x);
+				const float extent_y = std::abs(max.y - min.y);
+				const float extent_z = std::abs(max.z - min.z);
+				const float volume = extent_x * extent_y * extent_z;
+
+				// my current actor list draws every rigid body on the player, we have these checks in place to ensure we only draw the player box only
 			const float min_extent_threshold = 0.1f;
-			if (extent_x < min_extent_threshold || extent_y < min_extent_threshold || extent_z < min_extent_threshold ||
-				extent_x > 3.0f || extent_y > 3.0f || extent_z > 3.0f ||
-				extent_x != extent_x || extent_y != extent_y || extent_z != extent_z ||
-				extent_x == 0.0f || extent_y == 0.0f || extent_z == 0.0f ||
-				volume <= 1.0f || volume != volume || volume == 8.0f)
-			{
-				continue;
+				if (extent_x < min_extent_threshold || extent_y < min_extent_threshold || extent_z < min_extent_threshold ||
+					extent_x > 3.0f || extent_y > 3.0f || extent_z > 3.0f ||
+					extent_x != extent_x || extent_y != extent_y || extent_z != extent_z ||
+					extent_x == 0.0f || extent_y == 0.0f || extent_z == 0.0f ||
+					volume <= 1.0f || volume != volume || volume == 8.0f)
+				{
+					continue;
+				}
+
+				vector3_t corners[8] = {
+					origin + vector3_t(min.x, min.y, min.z),
+					origin + vector3_t(min.x, max.y, min.z),
+					origin + vector3_t(max.x, max.y, min.z),
+					origin + vector3_t(max.x, min.y, min.z),
+					origin + vector3_t(min.x, min.y, max.z),
+					origin + vector3_t(min.x, max.y, max.z),
+					origin + vector3_t(max.x, max.y, max.z),
+					origin + vector3_t(max.x, min.y, max.z),
+				};
+
+				vector2_t screen[8];
+				bool valid[8];
+				int valid_count = 0;
+
+				for (int i = 0; i < 8; ++i)
+				{
+					screen[i] = cache.camera->get_screen_position(corners[i]);
+					valid[i] = (screen[i].x != 0.f && screen[i].y != 0.f);
+
+					if (valid[i])
+						valid_count++;
+				}
+
+				if (valid_count == 0)
+					continue;
+
+				ImU32 color = IM_COL32(0, 255, 0, 255);
+
+				for (int i = 0; i < 4; ++i)
+				{
+					if (valid[i] && valid[(i + 1) % 4])
+						draw->AddLine(ImVec2(screen[i].x, screen[i].y), ImVec2(screen[(i + 1) % 4].x, screen[(i + 1) % 4].y), color);
+
+					if (valid[i + 4] && valid[((i + 1) % 4) + 4])
+						draw->AddLine(ImVec2(screen[i + 4].x, screen[i + 4].y), ImVec2(screen[((i + 1) % 4) + 4].x, screen[((i + 1) % 4) + 4].y), color);
+
+					if (valid[i] && valid[i + 4])
+						draw->AddLine(ImVec2(screen[i].x, screen[i].y), ImVec2(screen[i + 4].x, screen[i + 4].y), color);
+				}
 			}
+			Sleep(5);
 
-			vector3_t corners[8] = {
-				origin + vector3_t(min.x, min.y, min.z),
-				origin + vector3_t(min.x, max.y, min.z),
-				origin + vector3_t(max.x, max.y, min.z),
-				origin + vector3_t(max.x, min.y, min.z),
-				origin + vector3_t(min.x, min.y, max.z),
-				origin + vector3_t(min.x, max.y, max.z),
-				origin + vector3_t(max.x, max.y, max.z),
-				origin + vector3_t(max.x, min.y, max.z),
-			};
-
-			vector2_t screen[8];
-			bool valid[8];
-			int valid_count = 0;
-
-			for (int i = 0; i < 8; ++i)
-			{
-				screen[i] = cache.camera->get_screen_position(corners[i]);
-				valid[i] = (screen[i].x != 0.f && screen[i].y != 0.f);
-
-				if (valid[i])
-					valid_count++;
-			}
-
-			if (valid_count == 0)
-				continue;
-
-			ImU32 color = IM_COL32(0, 255, 0, 255);
-
-			for (int i = 0; i < 4; ++i)
-			{
-				if (valid[i] && valid[(i + 1) % 4])
-					draw->AddLine(ImVec2(screen[i].x, screen[i].y), ImVec2(screen[(i + 1) % 4].x, screen[(i + 1) % 4].y), color);
-
-				if (valid[i + 4] && valid[((i + 1) % 4) + 4])
-					draw->AddLine(ImVec2(screen[i + 4].x, screen[i + 4].y), ImVec2(screen[((i + 1) % 4) + 4].x, screen[((i + 1) % 4) + 4].y), color);
-
-				if (valid[i] && valid[i + 4])
-					draw->AddLine(ImVec2(screen[i].x, screen[i].y), ImVec2(screen[i + 4].x, screen[i + 4].y), color);
-			}
 		}
-
+		IMGUI_END:
 		end_scene();
 	}
 

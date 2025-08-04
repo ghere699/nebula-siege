@@ -124,10 +124,11 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)/dependencies;$(ProjectDir)/dependencies/memory;$(ProjectDir)/game;$(ProjectDir)/dependencies/includes;$(ProjectDir)/dependencies/overlay;$(ProjectDir)/dependencies/imgui;$(ProjectDir)/game/cache;$(ProjectDir)/dependencies/math;$(ProjectDir)/dependencies/drawing;$(ProjectDir)/dependencies/fonts;$(ProjectDir)/game/classes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>includes.hpp</PrecompiledHeaderFile>
       <Optimization>MaxSpeed</Optimization>
       <BufferSecurityCheck>false</BufferSecurityCheck>
+      <ControlFlowGuard>false</ControlFlowGuard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
