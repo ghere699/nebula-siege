@@ -59,21 +59,13 @@ void c_cache::setup_cache()
     hv::read_virt_mem(offset::original_camera_instructions, (void*)(g_imagebase + offset::camera_patch_address), 8);
     setup_camera();
 	// we store the original instructions so we can restore them later if needed
-    hv::read_virt_mem(offset::original_actor_instructions, (void*)(g_imagebase + offset::actor_patch_address), 12);
     //setup_actor();
 
     hv::for_each_cpu([&](uint32_t)
         {
             hv::r6hook(hv::g_cr3, g_imagebase + offset::actor_patch_address);
         });
-    
 
-    std::vector<c_actor*> temp_list;
-	std::unordered_set<c_actor*> actor_set;
-
-	    // we dont sleep in this loop due to the fact that we are moving the register into a codecave, the function for actor gets called very fast and pointers changes alot. 
-	    // If we sleep we may miss an actor pointer leading to it not drawing all players
-    auto last_new_pointer_time = std::chrono::steady_clock::now();
 
 	uintptr_t camera_code_cave_phys = hv::get_physical_address(hv::g_cr3, (void*)(g_imagebase + offset::code_cave_one));
 	//uintptr_t actor_code_cave_phys = hv::get_physical_address(hv::g_cr3, (void*)(g_imagebase + offset::code_cave_two));
