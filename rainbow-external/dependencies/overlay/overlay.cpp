@@ -6,6 +6,8 @@ using namespace std::chrono_literals;
 
 bool c_overlay::setup_overlay()
 {
+	CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+
 	game_window = FindWindowA("R6Game", nullptr);
 
 	if (!game_window)
@@ -110,13 +112,20 @@ bool c_overlay::create_imgui_backend()
 	// Create a borderless, topmost, layered window.
 	// WS_EX_TRANSPARENT is initially set based on menu state later.
 	HWND hwnd = ::CreateWindowEx(
-		WS_EX_TOPMOST | WS_EX_LAYERED, // Use WS_EX_LAYERED for transparency
+		WS_EX_TOPMOST | WS_EX_LAYERED | WS_EX_TRANSPARENT, // Use WS_EX_LAYERED for transparency
 		wc.lpszClassName,
 		"Dear ImGui DirectX11 Overlay",
 		WS_POPUP,
 		0, 0, screenWidth, screenHeight,
 		NULL, NULL, wc.hInstance, NULL
 	);
+
+	if (hwnd == NULL) {
+		MessageBox(NULL, "Window Creation Failed!", "Error", MB_OK | MB_ICONERROR);
+		return false;
+	}
+
+	overlay_window = hwnd;
 
 	// *** THE FIX IS HERE ***
 	// We don't use DwmExtendFrameIntoClientArea. Instead, we use a color key.
@@ -135,9 +144,8 @@ bool c_overlay::create_imgui_backend()
 	::ShowWindow(hwnd, SW_SHOWDEFAULT);
 	::UpdateWindow(hwnd);
 
-	overlay_window = hwnd;
 	LONG style = GetWindowLong(overlay_window, GWL_EXSTYLE);
-	style |= WS_EX_TRANSPARENT;
+	style |= WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW;
 	SetWindowLong(hwnd, GWL_EXSTYLE, style);
 	return true;
 }
@@ -191,11 +199,16 @@ bool c_overlay::clean_context()
 	CleanupDeviceD3D();
 	::DestroyWindow(overlay_window);
 	::UnregisterClass(wc.lpszClassName, wc.hInstance);
+
+	// 2. Uninitialize COM
+	CoUninitialize();
 	return true;
 }
 
 bool c_overlay::setup_render()
 {
+	setup_overlay();
+
 	bool done = false;
 
 	while (!done)

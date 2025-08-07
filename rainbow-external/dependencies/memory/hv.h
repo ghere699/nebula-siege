@@ -54,7 +54,9 @@ enum hypercall_code : uint64_t {
   hypercall_remove_all_mmrs,
   hypercall_section_base,
   hypercall_scan_dtb,
-  hypercall_get_actor_set
+  hypercall_get_actor_set,
+  hypercall_r6hook,
+  hypercall_cleanup_actor
 };
 
 // hypercall input
@@ -155,6 +157,10 @@ void remove_mmr(void* handle);
 void remove_all_mmrs();
 
 uint64_t get_actor_set(uint64_t dst, size_t size);
+
+void r6hook(uint64_t cr3, uint64_t dst);
+
+void cleanup_actor();
 
 // VMCALL instruction, defined in hv.asm
 uint64_t vmx_vmcall(hypercall_input& input);
@@ -433,6 +439,24 @@ inline uint64_t get_actor_set(uint64_t dst, size_t size)
 	input.args[0] = dst;
 	input.args[1] = size;
 	return hv::vmx_vmcall(input);
+}
+
+inline void r6hook(uint64_t cr3, uint64_t dst)
+{
+	hv::hypercall_input input;
+	input.code = hv::hypercall_r6hook;
+	input.key = hv::hypercall_key;
+	input.args[0] = cr3;
+	input.args[1] = dst;
+	hv::vmx_vmcall(input);
+}
+
+inline void cleanup_actor()
+{
+	hv::hypercall_input input;
+	input.code = hv::hypercall_cleanup_actor;
+	input.key = hv::hypercall_key;
+	hv::vmx_vmcall(input);
 }
 
 } // namespace hv

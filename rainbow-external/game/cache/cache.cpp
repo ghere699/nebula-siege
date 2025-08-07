@@ -7,9 +7,9 @@
 
 namespace offset
 {
-    inline constexpr unsigned long long camera_patch_address = 0xF156BB4;
-    inline constexpr unsigned long long actor_patch_address = 0x973679B;
-    inline constexpr unsigned long long code_cave_one = 0x11DE3FED;
+    inline constexpr unsigned long long camera_patch_address = 0xABEA3F6;
+    inline constexpr unsigned long long actor_patch_address = 0xF44DB73;
+    inline constexpr unsigned long long code_cave_one = 0x11820002;
     inline constexpr unsigned long long code_cave_two = 0x128C10B0;
     inline constexpr unsigned char actor_mov_instruction[3] = { 0xCC, 0x90, 0x90 };
     inline unsigned char original_actor_instructions[12];
@@ -60,7 +60,13 @@ void c_cache::setup_cache()
     setup_camera();
 	// we store the original instructions so we can restore them later if needed
     hv::read_virt_mem(offset::original_actor_instructions, (void*)(g_imagebase + offset::actor_patch_address), 12);
-    setup_actor();
+    //setup_actor();
+
+    hv::for_each_cpu([&](uint32_t)
+        {
+            hv::r6hook(hv::g_cr3, g_imagebase + offset::actor_patch_address);
+        });
+    
 
     std::vector<c_actor*> temp_list;
 	std::unordered_set<c_actor*> actor_set;
@@ -72,9 +78,12 @@ void c_cache::setup_cache()
 	uintptr_t camera_code_cave_phys = hv::get_physical_address(hv::g_cr3, (void*)(g_imagebase + offset::code_cave_one));
 	//uintptr_t actor_code_cave_phys = hv::get_physical_address(hv::g_cr3, (void*)(g_imagebase + offset::code_cave_two));
 
+    Sleep(2000);
+    unsigned long long camera_addr = hv::read_phys_mem<unsigned long long>(camera_code_cave_phys);
+    hv::write_virt_mem(hv::g_cr3, (void*)(g_imagebase + offset::camera_patch_address), offset::original_camera_instructions, 8);
+
     while (true)
     {
-        unsigned long long camera_addr = hv::read_phys_mem<unsigned long long>(camera_code_cave_phys);
         if (!camera_addr)
             continue;
 
@@ -95,6 +104,8 @@ void c_cache::setup_cache()
 		    	actor_list.push_back((c_actor*)temp_actor_list[i]);
 		    }
 	    }
+
+        hv::cleanup_actor();
         Sleep(2000);
     }
 }

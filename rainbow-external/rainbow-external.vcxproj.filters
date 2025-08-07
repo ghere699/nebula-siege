@@ -43,9 +43,6 @@
     <ClCompile Include="dependencies\imgui\imgui.cpp">
       <Filter>dependencies\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="dependencies\imgui\imgui_demo.cpp">
-      <Filter>dependencies\imgui</Filter>
-    </ClCompile>
     <ClCompile Include="dependencies\imgui\imgui_draw.cpp">
       <Filter>dependencies\imgui</Filter>
     </ClCompile>
