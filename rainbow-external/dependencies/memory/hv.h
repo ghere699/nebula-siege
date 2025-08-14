@@ -56,7 +56,11 @@ enum hypercall_code : uint64_t {
   hypercall_scan_dtb,
   hypercall_get_actor_set,
   hypercall_r6hook,
-  hypercall_cleanup_actor
+  hypercall_cleanup_actor,
+  hypercall_bone_hook,
+  hypercall_bounds_hook,
+  hypercall_get_bounds,
+  hypercall_cleanup_bounds
 };
 
 // hypercall input
@@ -158,9 +162,17 @@ void remove_all_mmrs();
 
 uint64_t get_actor_set(uint64_t dst, size_t size);
 
-void r6hook(uint64_t cr3, uint64_t dst);
+void r6hook(uint64_t cr3, uint64_t dst, uint64_t reg_name);
 
 void cleanup_actor();
+
+void bone_hook();
+
+void bounds_hook(uint64_t cr3, uint64_t dst, uint64_t dst2);
+
+uint64_t get_bounds(uint64_t dst, size_t size);
+
+void cleanup_bounds();
 
 // VMCALL instruction, defined in hv.asm
 uint64_t vmx_vmcall(hypercall_input& input);
@@ -441,13 +453,14 @@ inline uint64_t get_actor_set(uint64_t dst, size_t size)
 	return hv::vmx_vmcall(input);
 }
 
-inline void r6hook(uint64_t cr3, uint64_t dst)
+inline void r6hook(uint64_t cr3, uint64_t dst, uint64_t reg_name)
 {
 	hv::hypercall_input input;
 	input.code = hv::hypercall_r6hook;
 	input.key = hv::hypercall_key;
 	input.args[0] = cr3;
 	input.args[1] = dst;
+	input.args[2] = reg_name;
 	hv::vmx_vmcall(input);
 }
 
@@ -455,6 +468,43 @@ inline void cleanup_actor()
 {
 	hv::hypercall_input input;
 	input.code = hv::hypercall_cleanup_actor;
+	input.key = hv::hypercall_key;
+	hv::vmx_vmcall(input);
+}
+
+inline void bone_hook()
+{
+	hv::hypercall_input input;
+	input.code = hv::hypercall_bone_hook;
+	input.key = hv::hypercall_key;
+	hv::vmx_vmcall(input);
+}
+
+inline void bounds_hook(uint64_t cr3, uint64_t dst, uint64_t dst2)
+{
+	hv::hypercall_input input;
+	input.code = hv::hypercall_bounds_hook;
+	input.key = hv::hypercall_key;
+	input.args[0] = cr3;
+	input.args[1] = dst;
+	input.args[2] = dst2;
+	hv::vmx_vmcall(input);
+}
+
+inline uint64_t get_bounds(uint64_t dst, size_t size)
+{
+	hv::hypercall_input input;
+	input.code = hv::hypercall_get_bounds;
+	input.key = hv::hypercall_key;
+	input.args[0] = dst;
+	input.args[1] = size;
+	return hv::vmx_vmcall(input);
+}
+
+inline void cleanup_bounds()
+{
+	hv::hypercall_input input;
+	input.code = hv::hypercall_cleanup_bounds;
 	input.key = hv::hypercall_key;
 	hv::vmx_vmcall(input);
 }

@@ -232,27 +232,36 @@ bool c_overlay::setup_render()
 		if (!cache.camera)
 			goto IMGUI_END;
 
+		/*
+		for (vector3_t bone : cache.bones_list)
+		{
+			vector2_t bones_screen_pos = cache.camera->get_screen_position(bone);
+
+			draw->AddCircle(ImVec2(bone.x, bone.y), 10, IM_COL32_WHITE);
+		}
+		*/
+
 		{
 			std::lock_guard lock(actor_list_mutex);
 
-			for (c_actor* actor : cache.actor_list)
+			for (c_actor &actor : cache.actor_list)
 			{
 				
-				if (!actor)
+				if (!actor.get_instance())
 					continue;
 
-				if (!actor->is_actor_player())
+				if (!actor.is_actor_player())
 					continue;
 
-				c_actor::actor_status status = actor->get_actor_status();
+				c_actor::actor_status status = actor.get_actor_status();
 				if (status != c_actor::actor_status::VALID)
 					continue;
 
-				vector3_t origin = actor->get_actor_position();
+				vector3_t origin = actor.get_actor_position();
 				if (origin.empty())
 					continue;
 
-				auto [min, max] = actor->get_actor_bounds();
+				auto [min, max] = actor.get_actor_bounds();
 				if (min.empty() || max.empty())
 					continue;
 
@@ -306,6 +315,28 @@ bool c_overlay::setup_render()
 
 				if (valid_count == 0)
 					continue;
+
+				float min_sx = FLT_MAX, max_sx = -FLT_MAX, max_sy = -FLT_MAX;
+				for (int i = 0; i < 8; ++i) {
+					if (valid[i]) {
+						if (screen[i].x < min_sx) min_sx = screen[i].x;
+						if (screen[i].x > max_sx) max_sx = screen[i].x;
+						if (screen[i].y > max_sy) max_sy = screen[i].y;
+					}
+				}
+
+				/*if (max_sy > 0.f) {
+					vector2_t resolution = cache.camera->get_resolution();
+					ImVec2 line_start(resolution.x / 2.f, resolution.y / 2.f);
+					ImVec2 line_end((min_sx + max_sx) / 2.f, max_sy);
+					ImU32 line_color = IM_COL32_WHITE;
+
+					draw->AddLine(line_start, line_end, line_color);
+				}*/
+
+				//vector3_t cam_pos = cache.camera->get_position();
+				//std::cout << "x: " << cam_pos.x << " y: " << cam_pos.y << " z: " << cam_pos.z << "\n";
+				//std::cout << "x: " << origin.x << " y: " << origin.y << " z: " << origin.z << "\n";
 
 				ImU32 color = IM_COL32(0, 255, 0, 255);
 

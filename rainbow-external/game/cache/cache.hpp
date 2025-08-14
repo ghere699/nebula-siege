@@ -20,7 +20,8 @@ public:
 	static void setup_camera();
 	static void setup_actor();
 
-	inline static std::vector<c_actor*> actor_list;
+	inline static std::vector<c_actor> actor_list;
+    inline static std::vector<vector3_t> bones_list;
 	inline static c_camera* camera;
 };
 

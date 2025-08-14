@@ -28,6 +28,9 @@
     <Filter Include="game\classes">
       <UniqueIdentifier>{5789641b-fd68-404e-a3c0-7f04dae3991e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="dependencies\memory\zydis">
+      <UniqueIdentifier>{3c1ee3da-f227-4ae7-88c8-fcaa566e6c51}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core.cpp" />
@@ -113,6 +116,156 @@
     </ClInclude>
     <ClInclude Include="dependencies\memory\hv.h">
       <Filter>dependencies\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zycore\Allocator.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zycore\ArgParse.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zycore\Atomic.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zycore\Internal\AtomicGNU.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zycore\Internal\AtomicMSVC.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zycore\Bitset.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zycore\Comparison.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\Decoder.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\Internal\DecoderData.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\DecoderTypes.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\Defines.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zycore\Defines.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\Disassembler.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\Encoder.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\Internal\EncoderData.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\Generated\EnumInstructionCategory.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\Generated\EnumISAExt.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\Generated\EnumISASet.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\Generated\EnumMnemonic.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\Generated\EnumRegister.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zycore\Format.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\Formatter.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\Internal\FormatterATT.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\Internal\FormatterBase.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\FormatterBuffer.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\Internal\FormatterIntel.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zycore\LibC.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zycore\List.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zycore\API\Memory.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\MetaInfo.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\Mnemonic.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zycore\Object.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zycore\API\Process.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\Register.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\Segment.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\Internal\SharedData.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\SharedTypes.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\ShortString.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zycore\Status.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\Status.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\Internal\String.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zycore\String.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zycore\API\Synchronization.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zycore\API\Terminal.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zycore\API\Thread.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zycore\Types.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\Utils.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zycore\Vector.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zycore\Zycore.h">
+      <Filter>dependencies\memory\zydis</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\memory\zydis\include\Zydis\Zydis.h">
+      <Filter>dependencies\memory\zydis</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
