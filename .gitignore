@@ -428,6 +428,11 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
+!rainbow-external/dependencies/memory/zydis/lib/Zycore-debug.lib
+!rainbow-external/dependencies/memory/zydis/lib/Zycore-release.lib
+!rainbow-external/dependencies/memory/zydis/lib/Zydis-debug.lib
+!rainbow-external/dependencies/memory/zydis/lib/Zydis-release.lib
+
 # JetBrains Rider
 *.sln.iml
 
